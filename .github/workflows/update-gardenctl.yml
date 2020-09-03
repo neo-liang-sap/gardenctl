@@ -15,19 +15,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build the binary-files
+        id: build_binary_files
         run: |
           sudo apt-get update
           sudo apt-get install make -y
           make build
-          export latest_release_filtered_tag="${GITHUB_REF##*/}"
-          echo "the latest release tag is"
-          echo $latest_release_filtered_tag
+          echo ::set-output name=latest_release_filtered_tag::${GITHUB_REF##*/}
       - name: Upload binaries to release
         uses: AButler/upload-release-assets@v2.0
         with:
           files: 'bin/darwin-amd64/gardenctl-darwin-amd64;bin/linux-amd64/gardenctl-linux-amd64'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: ${{ latest_release_filtered_tag }}
+          release-tag: ${{ steps.build_binary_files.outputs.latest_release_filtered_tag }}
       - name: Send update with latest versions to gardener/homebrew-tap
         run: |
           mac_sha256sum=$(sha256sum bin/darwin-amd64/gardenctl-darwin-amd64)
