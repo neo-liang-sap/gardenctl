@@ -1,9 +1,12 @@
 name: gardenctl-updater
 
 on:
-  release:
-    types:
-      - published
+  # release:
+  #   types:
+  #     - published
+  push:
+    branches:
+      - github-action
 jobs:
   Update gardenctl in homebrew-tap:
     runs-on: ubuntu-latest
