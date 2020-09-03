@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build the binary-files:
+      - name: Build the binary-files
         run: |
           apt-get update
           apt-get install make -y
