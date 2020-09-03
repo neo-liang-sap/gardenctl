@@ -14,8 +14,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build the binary-files
         run: |
-          apt-get update
-          apt-get install make -y
+          sudo apt-get update
+          sudo apt-get install make -y
           make build
       - name: Upload binaries to release
         uses: AButler/upload-release-assets@v2.0
