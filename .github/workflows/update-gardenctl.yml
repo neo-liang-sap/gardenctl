@@ -19,26 +19,19 @@ jobs:
           sudo apt-get update
           sudo apt-get install make -y
           make build
-      - name: Get Latest Release
-        id: latest_version
-        uses: abatilo/release-info-action@v1.2.0
-        with:
-          owner: neo-liang-sap
-          repo: gardenctl
+          latest_release_filtered_tag=${$GITHUB_REF##*/}
       - name: Upload binaries to release
         uses: AButler/upload-release-assets@v2.0
         with:
           files: 'bin/darwin-amd64/gardenctl-darwin-amd64;bin/linux-amd64/gardenctl-linux-amd64'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: ${{ steps.latest_version.outputs.latest_tag }}
+          release-tag: ${latest_release_filtered_tag}
       - name: Send update with latest versions to gardener/homebrew-tap
-        env:
-          LATEST: ${{ steps.latest_version.outputs.latest_tag }}
         run: |
           mac_sha256sum=$(sha256sum bin/darwin-amd64/gardenctl-darwin-amd64)
           linux_sha256sum=$(sha256sum bin/linux-amd64/gardenctl-linux-amd64)
-          echo '{"event_type": "update", "client_payload": { "tag": "'"$LATEST"'", "mac_sha": "'"$mac_sha256sum"'", "linux_sha": "'"$linux_sha256sum"'"}}'
+          echo '{"event_type": "update", "client_payload": { "tag": "'"$latest_release_filtered_tag"'", "mac_sha": "'"$mac_sha256sum"'", "linux_sha": "'"$linux_sha256sum"'"}}'
           curl -X POST https://api.github.com/repos/neo-liang-sap/homebrew-tap/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u ${{ secrets.ACCESS_TOKEN }} \
-          --data '{"event_type": "update", "client_payload": { "tag": "'"$LATEST"'", "mac_sha": "'"$mac_sha256sum"'", "linux_sha": "'"$linux_sha256sum"'"}}'
+          --data '{"event_type": "update", "client_payload": { "tag": "'"$latest_release_filtered_tag"'", "mac_sha": "'"$mac_sha256sum"'", "linux_sha": "'"$linux_sha256sum"'"}}'
