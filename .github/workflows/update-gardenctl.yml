@@ -19,7 +19,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install make -y
           make build
-          latest_release_filtered_tag=${$GITHUB_REF##*/}
+          latest_release_filtered_tag=${${GITHUB_REF}##*/}
+          echo "the latest release tag is"
+          echo $latest_release_filtered_tag
       - name: Upload binaries to release
         uses: AButler/upload-release-assets@v2.0
         with:
