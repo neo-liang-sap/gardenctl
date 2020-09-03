@@ -6,9 +6,6 @@ on:
       - published
     branches:
       - github-action
-  # push:
-  #   branches:
-  #     - github-action
 jobs:
   update_gardenctl_in_homebrew_tap:
     runs-on: ubuntu-latest
